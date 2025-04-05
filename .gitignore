@@ -1,0 +1,33 @@
+# Файлы окружения и секреты
+.env
+.env.local
+*.env
+*.secret
+config.py
+
+# Папки зависимостей (для Python/Node.js)
+__pycache__/
+*.py[cod]
+venv/
+env/
+node_modules/
+.python-version
+
+# Логи и временные файлы
+*.log
+*.tmp
+*.swp
+*.bak
+
+# IDE и редакторы
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Системные файлы
+.DS_Store
+Thumbs.db
