@@ -15,8 +15,8 @@ openpyxl>=3.0.10
 xlrd>=2.0.1
 
 # Для работы с API маркетплейсов
-ozon-seller>=0.1.0
-wildberries-api>=0.1.0
+# ozon-seller>=0.1.0
+# wildberries-api>=0.1.0
 
 # Для логирования
 loguru>=0.6.0
