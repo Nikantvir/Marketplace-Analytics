@@ -188,7 +188,7 @@ def load_transactions_data(**kwargs):
         with open(csv_filename, 'r') as f:
             pg_hook.copy_expert(
                 sql=f"COPY {temp_table} FROM STDIN WITH CSV HEADER",
-                filename=f
+                filename=csv_filename
             )
         
         # Выполняем вставку с проверкой на полные дубликаты
@@ -295,7 +295,7 @@ def load_orders_data(**kwargs):
         with open(csv_filename, 'r') as f:
             pg_hook.copy_expert(
                 sql=f"COPY {temp_table} FROM STDIN WITH CSV HEADER",
-                filename=f
+                filename=csv_filename
             )
         
         # Выполняем вставку с проверкой на полные дубликаты
@@ -406,7 +406,7 @@ def load_products_data(**kwargs):
         with open(csv_filename, 'r') as f:
             pg_hook.copy_expert(
                 sql=f"COPY {temp_table} FROM STDIN WITH CSV HEADER",
-                filename=f
+                filename=csv_filename
             )
         
         # Выполняем вставку с проверкой на полные дубликаты (кроме data_actual_date)
@@ -482,7 +482,7 @@ def load_stocks_data(**kwargs):
         with open(csv_filename, 'r') as f:
             pg_hook.copy_expert(
                 sql=f"COPY {temp_table} FROM STDIN WITH CSV HEADER",
-                filename=f
+                filename=csv_filename
             )
         
         # Выполняем вставку с проверкой на полные дубликаты
