@@ -46,6 +46,7 @@ services:
       - ./airflow/config:/opt/airflow/config
       - ./data/logs/airflow:/opt/airflow/logs
       - ./data/csv:/opt/airflow/data/csv
+      - ./data/raw:/opt/airflow/data/raw:rw
     ports:
       - "8080:8080"
     healthcheck:
@@ -82,6 +83,7 @@ services:
       - ./airflow/config:/opt/airflow/config
       - ./data/logs/airflow:/opt/airflow/logs
       - ./data/csv:/opt/airflow/data/csv
+      - ./data/raw:/opt/airflow/data/raw:rw
     restart: always
 
   backend:
