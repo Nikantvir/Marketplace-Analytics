@@ -38,6 +38,19 @@ services:
       - OZON_API_KEY=${OZON_API_KEY}
       - OZON_CLIENT_ID=${OZON_CLIENT_ID}
       - DATA_CSV_PATH=${DATA_CSV_PATH}
+      - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=UTC
+      - AIRFLOW__WEBSERVER__SESSION_LIFETIME_DAYS=30
+      - AIRFLOW__WEBSERVER__SESSION_TYPE=filesystem
+      - AIRFLOW__WEBSERVER__COOKIE_SECURE=False
+      - AIRFLOW__WEBSERVER__COOKIE_SAMESITE=Lax
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+      - PYTHONUNBUFFERED=1
+      - AIRFLOW__SESSION__SESSION_TYPE=filesystem
+      - AIRFLOW__SESSION__SESSION_USE_SIGNER=True
+      - AIRFLOW__SESSION__SESSION_PERMANENT=True
+      - AIRFLOW__SESSION__SESSION_FILE_DIR=/opt/airflow/session
+      - AIRFLOW__WEBSERVER__BASE_URL=http://localhost:8080
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/plugins:/opt/airflow/plugins
@@ -45,6 +58,7 @@ services:
       - ./data/logs/airflow:/opt/airflow/logs
       - ./data/csv:/opt/airflow/data/csv
       - ./data/raw:/opt/airflow/data/raw:rw
+      - ./data/session:/opt/airflow/session
     ports:
       - "8080:8080"
     healthcheck:
@@ -75,6 +89,20 @@ services:
       - OZON_API_KEY=${OZON_API_KEY}
       - OZON_CLIENT_ID=${OZON_CLIENT_ID}
       - DATA_CSV_PATH=${DATA_CSV_PATH}
+      - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=UTC
+      - AIRFLOW__WEBSERVER__SESSION_LIFETIME_DAYS=30
+      - AIRFLOW__WEBSERVER__SESSION_TYPE=filesystem
+      - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
+      - AIRFLOW__WEBSERVER__COOKIE_SECURE=False
+      - AIRFLOW__WEBSERVER__COOKIE_SAMESITE=Lax
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+      - PYTHONUNBUFFERED=1
+      - AIRFLOW__SESSION__SESSION_TYPE=filesystem
+      - AIRFLOW__SESSION__SESSION_USE_SIGNER=True
+      - AIRFLOW__SESSION__SESSION_PERMANENT=True
+      - AIRFLOW__SESSION__SESSION_FILE_DIR=/opt/airflow/session
+      - AIRFLOW__WEBSERVER__BASE_URL=http://localhost:8080
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/plugins:/opt/airflow/plugins
@@ -82,6 +110,7 @@ services:
       - ./data/logs/airflow:/opt/airflow/logs
       - ./data/csv:/opt/airflow/data/csv
       - ./data/raw:/opt/airflow/data/raw:rw
+      - ./data/session:/opt/airflow/session
     restart: always
 
   backend:

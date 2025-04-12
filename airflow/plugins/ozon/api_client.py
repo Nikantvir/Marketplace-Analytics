@@ -36,23 +36,45 @@ def fetch_data(endpoint, date_from, date_to, limit=1000):
     page = 1
     
     while True:
-        payload = {
-            "filter": {
-                "date": {"from": date_from, "to": date_to},
-            },
-            "page": page,
-            "page_size": limit
-        }
+        # Разные эндпоинты могут требовать разные структуры запроса
+        if 'analytics' in endpoint:
+            payload = {
+                "date_from": date_from,
+                "date_to": date_to,
+                "limit": limit,
+                "offset": (page - 1) * limit
+            }
+        else:
+            payload = {
+                "filter": {
+                    "date": {"from": date_from, "to": date_to},
+                },
+                "page": page,
+                "page_size": limit
+            }
         
         data = safe_api_request('POST', url, json_data=payload)
-        if not data or 'result' not in data:
+        
+        # Проверка на наличие данных и их структуру
+        if not data:
             break
             
-        all_data.extend(data['result'].get('rows', []))
-        if len(data['result']['rows']) < limit:
+        # У разных API могут быть разные структуры ответа
+        result_data = data.get('result', data)
+        rows = result_data.get('rows', result_data.get('items', []))
+        
+        if not rows:
+            break
+            
+        all_data.extend(rows)
+        
+        if len(rows) < limit:
             break
             
         page += 1
         time.sleep(1)  # Задержка между запросами
         
     return all_data
+
+
+

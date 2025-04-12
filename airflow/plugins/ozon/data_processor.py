@@ -1,3 +1,10 @@
+import pandas as pd
+import hashlib
+import json
+import os
+from datetime import datetime
+from airflow.hooks.postgres_hook import PostgresHook
+
 def process_and_save(data, report_type, unique_keys, date_field, data_path, postgres_conn_id):
     df = pd.DataFrame(data)
     
