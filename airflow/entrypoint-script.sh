@@ -1,25 +1,50 @@
 #!/bin/bash
-# Fix for Flask-Session using a compatible approach
+# Apply patch for flask_session timezone issue
 python -c "
+import sys
 from datetime import datetime, timezone
-from flask_session.sessions import MongoDBSessionInterface
+import importlib
+import types
 
-# Patch MongoDBSessionInterface.open_session directly
-original_open_session = MongoDBSessionInterface.open_session
+import sys
+sys.path.insert(0, '/opt/airflow/patches')
+import flask_session_patch
+print('Flask-Session patched for timezone handling.')
 
+# Import flask_session module
+from flask_session import sessions
+
+# Create a patched version of open_session method
 def patched_open_session(self, app, request):
-    rv = original_open_session(self, app, request)
-    if hasattr(self, 'collection') and hasattr(self.collection, 'find_one'):
-        sid = self.key_prefix + request.cookies.get(app.session_cookie_name, '')
-        saved_session = self.collection.find_one({'sid': sid})
-        if saved_session and hasattr(saved_session, 'expiry'):
-            if not saved_session.expiry.tzinfo:
-                saved_session.expiry = saved_session.expiry.replace(tzinfo=timezone.utc)
-    return rv
+    saved_session = None
+    sid = request.cookies.get(app.session_cookie_name)
+    
+    # For various session types
+    if hasattr(self, 'collection') and sid:  # MongoDB
+        saved_session = self.collection.find_one({'sid': self.key_prefix + sid})
+    elif hasattr(self, 'redis') and sid:  # Redis
+        saved_session = self.serializer.loads(self.redis.get(self.key_prefix + sid) or b'')
+    
+    # Handle the expiry time by ensuring both times have timezone info
+    if saved_session and hasattr(saved_session, 'expiry') and saved_session.expiry:
+        # Convert expiry time to TZ-aware if it's naive
+        if not saved_session.expiry.tzinfo:
+            saved_session.expiry = saved_session.expiry.replace(tzinfo=timezone.utc)
+            
+        # Use TZ-aware utcnow for comparison
+        if saved_session.expiry <= datetime.now(timezone.utc):
+            return self.session_class()
+    
+    # Create a new session if needed
+    if not saved_session:
+        return self.session_class()
+    
+    return self.session_class(saved_session)
 
-MongoDBSessionInterface.open_session = patched_open_session
-print('Flask-Session MongoDB interface patched successfully.')
+# Apply the patch to the relevant class(es)
+sessions.SessionInterface.open_session = patched_open_session
+print('Flask-Session patched successfully for timezone handling.')
 "
 
-# Run airflow command
+# Execute the original airflow command
 exec airflow $@

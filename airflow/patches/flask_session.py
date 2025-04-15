@@ -1,28 +1,21 @@
-#!/bin/bash
-# Applying a compatible patch for flask_session 0.5.0
-python -c "
-import sys
+# flask_session_patch.py
 from datetime import datetime, timezone
+import types
 from flask_session.sessions import SessionInterface
 
-# Check if we're dealing with a MongoDB session interface
-orig_open_session = SessionInterface.open_session
+# Original method reference
+original_open_session = SessionInterface.open_session
 
+# Create patched method
 def patched_open_session(self, app, request):
-    rv = orig_open_session(self, app, request)
-    if hasattr(self, 'collection') and hasattr(self.collection, 'find_one'):
-        # Fix MongoDB session expiry check
-        sid = self.key_prefix + request.cookies.get(app.session_cookie_name, '')
-        if hasattr(self, 'collection') and hasattr(self.collection, 'find_one'):
-            saved_session = self.collection.find_one({'sid': sid})
-            if saved_session and hasattr(saved_session, 'expiry'):
-                if not saved_session.expiry.tzinfo:
-                    saved_session.expiry = saved_session.expiry.replace(tzinfo=timezone.utc)
+    # Call original method to get the session
+    rv = original_open_session(self, app, request)
+    
+    # Fix any timezone issues in the session
+    if hasattr(rv, 'expiry') and rv.expiry and not rv.expiry.tzinfo:
+        rv.expiry = rv.expiry.replace(tzinfo=timezone.utc)
+    
     return rv
 
+# Apply the patch
 SessionInterface.open_session = patched_open_session
-print('Flask-Session patched successfully.')
-"
-
-# Run airflow command
-exec airflow $@

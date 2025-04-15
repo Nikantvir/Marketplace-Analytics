@@ -178,5 +178,5 @@ CREATE TABLE IF NOT EXISTS stg_ozon.finance_reports (
     raw_data JSONB,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-CREATE INDEX IF NOT EXISTS idx_ozon_finance_reports_period FROM stg_ozon.finance_reports(period_from, period_to);
+CREATE INDEX IF NOT EXISTS idx_ozon_finance_reports_period ON stg_ozon.finance_reports(period_from, period_to);
 CREATE INDEX IF NOT EXISTS idx_ozon_finance_reports_product_id ON stg_ozon.finance_reports(product_id);

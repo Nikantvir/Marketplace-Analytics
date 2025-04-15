@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS stg.ozon_products (
     last_updated TIMESTAMP,
     data_actual_date TIMESTAMP
 );
-CREATE INDEX idx_products_offer_id ON stg.ozon_products (offer_id);
-CREATE INDEX idx_products_last_updated ON stg.ozon_products (last_updated);
+CREATE INDEX IF NOT EXISTS idx_products_offer_id ON stg.ozon_products (offer_id);
+CREATE INDEX IF NOT EXISTS idx_products_last_updated ON stg.ozon_products (last_updated);
 
 -- Денежные потоки
 CREATE TABLE IF NOT EXISTS stg.ozon_cash_flow (
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS stg.ozon_cash_flow (
     expenses DECIMAL(18,2),
     data_actual_date TIMESTAMP
 );
-CREATE INDEX idx_cash_flow_period ON stg.ozon_cash_flow (period_start);
+CREATE INDEX IF NOT EXISTS idx_cash_flow_period ON stg.ozon_cash_flow (period_start);
 
 -- Взаиморасчёты
 CREATE TABLE IF NOT EXISTS stg.ozon_mutual_settlements (
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS stg.ozon_mutual_settlements (
     data_actual_date TIMESTAMP,
     UNIQUE (report_code, date)
 );
-CREATE INDEX idx_mutual_settlements_date ON stg.ozon_mutual_settlements (date);
+CREATE INDEX IF NOT EXISTS idx_mutual_settlements_date ON stg.ozon_mutual_settlements (date);
 
 CREATE TABLE IF NOT EXISTS stg.ozon_transactions (
     id SERIAL PRIMARY KEY,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS stg.ozon_transactions (
     commission_amount DECIMAL(15,2),
     data_actual_date TIMESTAMP
 );
-CREATE INDEX idx_transactions_date ON stg.ozon_transactions (operation_date);
+CREATE INDEX IF NOT EXISTS idx_transactions_date ON stg.ozon_transactions (operation_date);
 
 CREATE TABLE IF NOT EXISTS stg.ozon_analytics_data (
     id SERIAL PRIMARY KEY,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS stg.ozon_analytics_data (
     data_actual_date TIMESTAMP,
     UNIQUE (dimension, date)
 );
-CREATE INDEX idx_analytics_date ON stg.ozon_analytics_data (date);
+CREATE INDEX IF NOT EXISTS idx_analytics_date ON stg.ozon_analytics_data (date);
 
 CREATE TABLE IF NOT EXISTS stg.ozon_actions (
     id SERIAL PRIMARY KEY,
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS stg.ozon_actions (
     date_end DATE,
     data_actual_date TIMESTAMP
 );
-CREATE INDEX idx_actions_dates ON stg.ozon_actions (date_start, date_end);
+CREATE INDEX IF NOT EXISTS idx_actions_dates ON stg.ozon_actions (date_start, date_end);
 
 CREATE TABLE IF NOT EXISTS stg.ozon_action_products (
     id SERIAL PRIMARY KEY,
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS stg.ozon_action_products (
     data_actual_date TIMESTAMP,
     UNIQUE (action_id, product_id)
 );
-CREATE INDEX idx_action_products ON stg.ozon_action_products (action_id);
+CREATE INDEX IF NOT EXISTS idx_action_products ON stg.ozon_action_products (action_id);
 
 CREATE TABLE IF NOT EXISTS stg.ozon_fbo_postings (
     id SERIAL PRIMARY KEY,
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS stg.ozon_fbo_postings (
     status TEXT,
     data_actual_date TIMESTAMP
 );
-CREATE INDEX idx_fbo_postings_status ON stg.ozon_fbo_postings (status);
+CREATE INDEX IF NOT EXISTS idx_fbo_postings_status ON stg.ozon_fbo_postings (status);
 
 CREATE TABLE IF NOT EXISTS stg.ozon_supply_timeslots (
     id SERIAL PRIMARY KEY,
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS stg.ozon_supply_timeslots (
     data_actual_date TIMESTAMP,
     UNIQUE (supply_order_id, timeslot_start)
 );
-CREATE INDEX idx_timeslots_range ON stg.ozon_supply_timeslots (timeslot_start, timeslot_end);
+CREATE INDEX IF NOT EXISTS idx_timeslots_range ON stg.ozon_supply_timeslots (timeslot_start, timeslot_end);
 
 CREATE TABLE IF NOT EXISTS stg.ozon_warehouse_load (
     id SERIAL PRIMARY KEY,
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS stg.ozon_warehouse_load (
     data_actual_date TIMESTAMP,
     UNIQUE (warehouse_id, date)
 );
-CREATE INDEX idx_warehouse_load_date ON stg.ozon_warehouse_load (date);
+CREATE INDEX IF NOT EXISTS idx_warehouse_load_date ON stg.ozon_warehouse_load (date);
 
 CREATE TABLE IF NOT EXISTS stg.ozon_available_timeslots (
     id SERIAL PRIMARY KEY,
@@ -117,5 +117,5 @@ CREATE TABLE IF NOT EXISTS stg.ozon_available_timeslots (
     data_actual_date TIMESTAMP,
     UNIQUE (warehouse_id, timeslot_start)
 );
-CREATE INDEX idx_available_timeslots ON stg.ozon_available_timeslots (timeslot_start);
+CREATE INDEX IF NOT EXISTS idx_available_timeslots ON stg.ozon_available_timeslots (timeslot_start);
 """
